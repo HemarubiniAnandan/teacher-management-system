@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System users (Admins and Teachers)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "teacher"] }
+      },
+      "required": ["uid", "name", "email", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Student information",
+      "type": "object",
+      "properties": {
+        "regNumber": { "type": "integer" },
+        "name": { "type": "string" },
+        "parentName": { "type": "string" },
+        "parentContact": { "type": "string" },
+        "email": { "type": "string" },
+        "arrears": { "type": "integer" }
+      },
+      "required": ["regNumber", "name", "email"]
+    },
+    "Allocation": {
+      "title": "Allocation",
+      "description": "Mapping of student ranges to teachers",
+      "type": "object",
+      "properties": {
+        "className": { "type": "string" },
+        "startReg": { "type": "integer" },
+        "endReg": { "type": "integer" },
+        "counsellorId": { "type": "string" },
+        "coordinatorId": { "type": "string" }
+      },
+      "required": ["className", "startReg", "endReg", "counsellorId", "coordinatorId"]
+    },
+    "Certification": {
+      "title": "Certification",
+      "description": "Student certifications",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string", "enum": ["in-progress", "completed"] },
+        "fileUrl": { "type": "string", "format": "uri" }
+      },
+      "required": ["studentId", "title", "status"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Teacher feedback for students",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentId", "teacherId", "content", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "Collection of users"
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Collection of students"
+    },
+    "/allocations/{allocationId}": {
+      "schema": "Allocation",
+      "description": "Collection of student-teacher allocations"
+    },
+    "/certifications/{certId}": {
+      "schema": "Certification",
+      "description": "Collection of certifications"
+    },
+    "/feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Collection of feedback"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function userExists() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && (
+        (userExists() && getUserData().role == 'admin') || 
+        (request.auth.token.email == "hemaanand.sp26@gmail.com")
+      );
+    }
+    
+    function isTeacher() {
+      return isAuthenticated() && userExists() && getUserData().role == 'teacher';
+    }
+
+    // User Rules
+    match /users/{uid} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == uid;
+      allow update: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Student Rules
+    match /students/{studentId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated(); 
+    }
+
+    // Allocation Rules
+    match /allocations/{allocationId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Certification Rules
+    match /certifications/{certId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Feedback Rules
+    match /feedback/{feedbackId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+  }
+}

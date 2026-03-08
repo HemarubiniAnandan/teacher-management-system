@@ -1,0 +1,5 @@
+{
+  "name": "Teacher Management System",
+  "description": "A comprehensive system for admins to manage teachers and students, and for teachers to track student progress, certifications, and feedback.",
+  "requestFramePermissions": []
+}
